@@ -27,6 +27,6 @@ Static {
 
 #input {
     width: 60%;
-    background: teal;
+    background: teal 0%;
     margin-top: 2;
 }
