@@ -1,5 +1,4 @@
 from pathlib import Path
-from random import choice
 from typing import Final
 
 from textual.app import App, ComposeResult
@@ -10,9 +9,11 @@ from textual.widgets import Header, Static
 SAVED_TEXT_PATH: Final[Path] = Path(__file__).parent / "saved"
 
 
-def load_random_text() -> str:
-    chosen_file = choice(list(SAVED_TEXT_PATH.glob("*.txt")))
-    return chosen_file.read_text()
+def load_text() -> str:
+    for file in SAVED_TEXT_PATH.glob("*.txt"):
+        return file.read_text()
+    else:
+        return "No file available!"
 
 
 class LayersExample(App):
@@ -23,7 +24,7 @@ class LayersExample(App):
         yield Header()
         with Vertical():
             with Center():
-                yield Static(load_random_text(), id="text")
+                yield Static(load_text(), id="text")
             with Center():
                 yield Static("input", id="input")
 
