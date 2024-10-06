@@ -1,22 +1,48 @@
 from pathlib import Path
 from typing import Final
 
-from textual.app import App, ComposeResult
+from textual.reactive import reactive
+from textual.app import App, ComposeResult, RenderResult
 from textual.containers import Center, Vertical
+from textual.widget import Widget
 from textual.widgets import Header, Static
 
 
 SAVED_TEXT_PATH: Final[Path] = Path(__file__).parent / "saved"
 
 
-def load_text() -> str:
-    for file in SAVED_TEXT_PATH.glob("*.txt"):
-        return file.read_text()
-    else:
-        return "No file available!"
+def load_text(index: int) -> str:
+    files = list(SAVED_TEXT_PATH.glob("*.txt"))
+    if not files:
+        return "No files available!"
+    index %= len(files)
+    return files[index].read_text()
 
 
-class LayersExample(App):
+class TextArea(Static, can_focus=True):
+    BINDINGS = [
+        ("right,l", "goto_text(1)", "Next"),
+        ("left,h", "goto_text(-1)", "Previous"),
+    ]
+
+    count = reactive(0)
+    text = reactive(load_text(0))
+
+    def render(self) -> RenderResult:
+        return self.text
+
+    def action_goto_text(self, amount: int) -> None:
+        self.count += amount
+        self.text = load_text(self.count)
+
+
+# class TypingArea(Widget):
+#     CSS_PATH = "style/typing.tcss"
+#
+#     def compose(self) -> ComposeResult: ...
+
+
+class ClacktileApp(App):
     CSS_PATH = "style/layers.tcss"
     TITLE = "Clacktile"
 
@@ -24,11 +50,11 @@ class LayersExample(App):
         yield Header()
         with Vertical():
             with Center():
-                yield Static(load_text(), id="text")
+                yield TextArea(id="text")
             with Center():
-                yield Static("input", id="input")
+                yield Static("typing", id="input")
 
 
-# if __name__ == "__main__":
-app = LayersExample()
-# app.run()
+if __name__ == "__main__":
+    app = ClacktileApp()
+    app.run()
