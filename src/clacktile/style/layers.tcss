@@ -1,0 +1,32 @@
+Screen {
+    align: center middle;
+    layers: below above;
+}
+
+Vertical {
+  content-align: center middle;
+  text-align: center;
+}
+
+Static {
+    width: 28;
+    height: 8;
+    color: auto;
+    content-align: center middle;
+    padding: 2 2;
+    margin-left: 10;
+    margin-right: 10;
+}
+
+#text {
+    width: 80%;
+    background: $boost;
+    margin-top: 4;
+    height: 10;
+}
+
+#input {
+    width: 60%;
+    background: teal;
+    margin-top: 2;
+}

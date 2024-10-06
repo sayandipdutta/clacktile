@@ -1,0 +1,21 @@
+[project]
+name = "clacktile"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "textual>=0.82.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "basedpyright>=1.18.3",
+    "pytest>=8.3.3",
+    "ruff>=0.6.9",
+    "textual-dev>=1.6.1",
+]
