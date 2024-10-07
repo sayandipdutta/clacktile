@@ -25,7 +25,7 @@ Static {
     height: 10;
 }
 
-TypingArea {
+TextArea {
     width: 60%;
     height: 60%;
     background: teal 0%;
