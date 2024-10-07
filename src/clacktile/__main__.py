@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import override
 
 from textual.app import App, ComposeResult
-from textual.containers import Center, Container
-from textual.widgets import TextArea
+from textual.containers import Center, Container, Horizontal
+from textual.widgets import Static, TextArea
 
 from clacktile.static import StaticText
 from clacktile.ui_wrapper import wrap_body
@@ -22,9 +22,11 @@ class ClacktileApp(App[str]):
     @wrap_body(header=True, footer=True)
     @override
     def compose(self) -> ComposeResult:
-        with Container():
+        with Container(id="body"):
             with Center():
                 yield StaticText(id="text")
+            with Container(id="counter"):
+                yield Static("00:30", id="timer")
             with Center():
                 yield TextArea(show_line_numbers=False, id="input")
 
