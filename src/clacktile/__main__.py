@@ -39,7 +39,12 @@ class ClacktileApp(App[str]):
     def action_screenshot(
         self, filename: str | None = None, path: str | None = None
     ) -> None:
-        _ = super().save_screenshot(filename, path)
+        try:
+            saved_filename = super().save_screenshot(filename, path)
+        except Exception:
+            self.notify("Screenshot could not be saved!", severity="warning")
+        else:
+            self.notify(f"Screenshot saved in {saved_filename}")
 
 
 if __name__ == "__main__":
