@@ -13,10 +13,10 @@ def wrap_body[T](
     def deco(
         composer: Composer[T],
     ) -> Composer[T]:
-        def inner(_: T) -> ComposeResult:
+        def inner(app: T) -> ComposeResult:
             if header:
                 yield Header()
-            yield from composer(_)
+            yield from composer(app)
             if footer:
                 yield Footer()
 
