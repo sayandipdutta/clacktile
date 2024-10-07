@@ -1,33 +1,47 @@
-from pathlib import Path
-from random import choice
-from typing import Final
+from __future__ import annotations
+
+from typing import override
 
 from textual.app import App, ComposeResult
-from textual.containers import Center, Vertical
-from textual.widgets import Header, Static
+from textual.containers import Center, Container
+from textual.widgets import TextArea
+
+from clacktile.static import StaticText
+from clacktile.ui_wrapper import wrap_body
 
 
-SAVED_TEXT_PATH: Final[Path] = Path(__file__).parent / "saved"
-
-
-def load_random_text() -> str:
-    chosen_file = choice(list(SAVED_TEXT_PATH.glob("*.txt")))
-    return chosen_file.read_text()
-
-
-class LayersExample(App):
+class ClacktileApp(App[str]):
     CSS_PATH = "style/layers.tcss"
     TITLE = "Clacktile"
+    BINDINGS = [
+        ("ctrl+l", "next_static_text()", "Next"),
+        ("ctrl+r", "reset_text()", "Reset"),
+        ("ctrl+s", "screenshot", "Screenshot"),
+    ]
 
+    @wrap_body(header=True, footer=True)
+    @override
     def compose(self) -> ComposeResult:
-        yield Header()
-        with Vertical():
+        with Container():
             with Center():
-                yield Static(load_random_text(), id="text")
+                yield StaticText(id="text")
             with Center():
-                yield Static("input", id="input")
+                yield TextArea(show_line_numbers=False, id="input")
+
+    def action_next_static_text(self) -> None:
+        self.action_reset_text()
+        self.query_one("#text", expect_type=StaticText).goto_text()
+
+    def action_reset_text(self) -> None:
+        _ = self.query_one("#input", expect_type=TextArea).clear()
+
+    @override
+    def action_screenshot(
+        self, filename: str | None = None, path: str | None = None
+    ) -> None:
+        _ = super().save_screenshot(filename, path)
 
 
-# if __name__ == "__main__":
-app = LayersExample()
-# app.run()
+if __name__ == "__main__":
+    app = ClacktileApp()
+    _ = app.run()

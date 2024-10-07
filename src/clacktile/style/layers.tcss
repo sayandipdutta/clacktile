@@ -3,7 +3,7 @@ Screen {
     layers: below above;
 }
 
-Vertical {
+Container {
   content-align: center middle;
   text-align: center;
 }
@@ -25,8 +25,9 @@ Static {
     height: 10;
 }
 
-#input {
+TextArea {
     width: 60%;
-    background: teal;
+    height: 60%;
+    background: teal 0%;
     margin-top: 2;
 }
