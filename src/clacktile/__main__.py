@@ -16,6 +16,7 @@ class ClacktileApp(App[str]):
     BINDINGS = [
         ("ctrl+l", "next_static_text()", "Next"),
         ("ctrl+r", "reset_text()", "Reset"),
+        ("ctrl+s", "screenshot", "Screenshot"),
     ]
 
     @wrap_body(header=True, footer=True)
@@ -33,6 +34,12 @@ class ClacktileApp(App[str]):
 
     def action_reset_text(self) -> None:
         _ = self.query_one("#input", expect_type=TextArea).clear()
+
+    @override
+    def action_screenshot(
+        self, filename: str | None = None, path: str | None = None
+    ) -> None:
+        _ = super().save_screenshot(filename, path)
 
 
 if __name__ == "__main__":
