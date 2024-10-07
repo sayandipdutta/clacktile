@@ -10,9 +10,7 @@ type Composer[T] = Callable[[T], ComposeResult]
 def wrap_body[T](
     header: bool = True, footer: bool = False
 ) -> Callable[[Composer[T]], Composer[T]]:
-    def deco(
-        composer: Composer[T],
-    ) -> Composer[T]:
+    def deco(composer: Composer[T]) -> Composer[T]:
         def inner(app: T) -> ComposeResult:
             if header:
                 yield Header()
