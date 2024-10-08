@@ -56,7 +56,6 @@ class ClacktileApp(App[str]):
         match message.status:
             case Status.STARTED:
                 countdown.timer.resume()
-                countdown.update_time()
             case Status.NOT_STARTED:
                 countdown.reset()
 
