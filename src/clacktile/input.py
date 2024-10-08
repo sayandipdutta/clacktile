@@ -1,17 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum, auto
 from textual.events import Key
 from textual.message import Message
 from textual.reactive import reactive
 from textual.widgets import TextArea
 
-
-class Status(Enum):
-    NOT_STARTED = auto()
-    STARTED = auto()
-    ENDED = auto()
+from clacktile.common import Status
 
 
 class TypingArea(TextArea):
@@ -32,16 +27,11 @@ class TypingArea(TextArea):
         if key.is_printable and self.typing_status is Status.NOT_STARTED:
             self.typing_status = Status.STARTED
 
-    def on_counter_status_changed(self, status: str):
-        if status == "ended":
-            self.typing_status = Status.ENDED
-
     def watch_typing_status(self, status: Status):
         match status:
             case Status.STARTED:
                 _ = self.post_message(TypingArea.StatusChanged(status))
+                self.read_only = False
             case Status.ENDED:
-                _ = self.post_message(TypingArea.StatusChanged(status))
+                # TODO: Consider cursor visibility
                 self.read_only = True
-            case _:
-                pass

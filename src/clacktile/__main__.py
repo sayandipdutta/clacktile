@@ -3,9 +3,11 @@ from __future__ import annotations
 from typing import override
 
 from textual.app import App, ComposeResult
-from textual.containers import Center, Container, Horizontal
-from textual.widgets import Static, TextArea
+from textual.containers import Center, Container
 
+from clacktile.common import Status
+from clacktile.counter import TimeCountdown
+from clacktile.input import TypingArea
 from clacktile.static import StaticText
 from clacktile.ui_wrapper import wrap_body
 
@@ -16,7 +18,7 @@ class ClacktileApp(App[str]):
     BINDINGS = [
         ("ctrl+l", "next_static_text()", "Next"),
         ("ctrl+r", "reset_text()", "Reset"),
-        ("ctrl+s", "screenshot", "Screenshot"),
+        ("ctrl+s", "screenshot()", "Screenshot"),
     ]
 
     @wrap_body(header=True, footer=True)
@@ -26,16 +28,17 @@ class ClacktileApp(App[str]):
             with Center():
                 yield StaticText(id="text")
             with Container(id="counter"):
-                yield Static("00:30", id="timer")
+                yield TimeCountdown("00:20", id="timer", start=20)
             with Center():
-                yield TextArea(show_line_numbers=False, id="input")
+                yield TypingArea(id="input")
 
     def action_next_static_text(self) -> None:
         self.action_reset_text()
         self.query_one("#text", expect_type=StaticText).goto_text()
 
     def action_reset_text(self) -> None:
-        _ = self.query_one("#input", expect_type=TextArea).clear()
+        _ = self.query_one("#input", expect_type=TypingArea).reset()
+        _ = self.query_one("#timer", expect_type=TimeCountdown).reset()
 
     @override
     def action_screenshot(
@@ -47,6 +50,20 @@ class ClacktileApp(App[str]):
             self.notify("Screenshot could not be saved!", severity="warning")
         else:
             self.notify(f"Screenshot saved in {saved_filename}")
+
+    def on_typing_area_status_changed(self, message: "TypingArea.StatusChanged"):
+        countdown = self.query_one("#timer", expect_type=TimeCountdown)
+        match message.status:
+            case Status.STARTED:
+                countdown.timer.resume()
+                countdown.update_time()
+            case Status.NOT_STARTED:
+                countdown.reset()
+
+    def on_counter_status_changed(self, status: "TimeCountdown.StatusChanged"):
+        typing_area = self.query_one("#input", expect_type=TypingArea)
+        if status.status is Status.ENDED:
+            typing_area.typing_status = status.status
 
 
 if __name__ == "__main__":
