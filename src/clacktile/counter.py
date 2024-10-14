@@ -49,5 +49,6 @@ class TimeCountdown(Counter):
 
     def reset(self):
         self.timer.reset()
+        self.timer.pause()
         self.time = self.start
         self.renderable = self.init

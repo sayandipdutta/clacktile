@@ -51,7 +51,7 @@ class ClacktileApp(App[str]):
         else:
             self.notify(f"Screenshot saved in {saved_filename}")
 
-    def on_typing_area_status_changed(self, message: "TypingArea.StatusChanged"):
+    def on_typing_area_status_changed(self, message: TypingArea.StatusChanged):
         countdown = self.query_one("#timer", expect_type=TimeCountdown)
         match message.status:
             case Status.STARTED:
@@ -59,7 +59,7 @@ class ClacktileApp(App[str]):
             case Status.NOT_STARTED:
                 countdown.reset()
 
-    def on_counter_status_changed(self, status: "TimeCountdown.StatusChanged"):
+    def on_counter_status_changed(self, status: TimeCountdown.StatusChanged):
         typing_area = self.query_one("#input", expect_type=TypingArea)
         if status.status is Status.ENDED:
             typing_area.typing_status = status.status
