@@ -17,7 +17,7 @@ class ClacktileApp(App[str]):
     TITLE = "Clacktile"
     BINDINGS = [
         ("ctrl+l", "next_static_text()", "Next"),
-        ("ctrl+r", "reset_text()", "Reset"),
+        ("ctrl+r", "reset()", "Reset"),
         ("ctrl+s", "screenshot()", "Screenshot"),
     ]
 
@@ -28,15 +28,14 @@ class ClacktileApp(App[str]):
             with Center():
                 yield StaticText(id="text")
             with Container(id="counter"):
-                yield TimeCountdown("00:20", id="timer", start=20)
+                yield TimeCountdown(id="timer", start=10)
             with Center():
                 yield TypingArea(id="input")
 
     def action_next_static_text(self) -> None:
-        self.action_reset_text()
-        self.query_one("#text", expect_type=StaticText).goto_text()
+        self.query_one("#text", expect_type=StaticText).next()
 
-    def action_reset_text(self) -> None:
+    def action_reset(self) -> None:
         _ = self.query_one("#input", expect_type=TypingArea).reset()
         _ = self.query_one("#timer", expect_type=TimeCountdown).reset()
 
@@ -63,6 +62,10 @@ class ClacktileApp(App[str]):
         typing_area = self.query_one("#input", expect_type=TypingArea)
         if status.status is Status.ENDED:
             typing_area.typing_status = status.status
+
+    def on_static_text_changed(self, message: StaticText.Changed):
+        _ = self.action_reset()
+        del message
 
 
 if __name__ == "__main__":

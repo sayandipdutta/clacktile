@@ -20,7 +20,6 @@ class TypingArea(TextArea):
         super().__init__(text, show_line_numbers=False, id=id)
 
     def reset(self):
-        _ = self.clear()
         self.typing_status = Status.NOT_STARTED
 
     def on_key(self, key: Key):
@@ -35,3 +34,5 @@ class TypingArea(TextArea):
             case Status.ENDED:
                 # TODO: Consider cursor visibility
                 self.read_only = True
+            case Status.NOT_STARTED:
+                _ = self.clear()
