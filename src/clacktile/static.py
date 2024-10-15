@@ -1,16 +1,20 @@
+from textual.message import Message
 from textual.reactive import reactive
 from textual.widgets import Static
 
-from clacktile.textloader import load_text
+from clacktile.textloader import SavedTexts
 
 
 class StaticText(Static, can_focus=True):
     count = reactive(0)
 
-    def __init__(self, id: str) -> None:
-        super().__init__(renderable=load_text(0), id=id)
+    class Changed(Message):
+        pass
 
-    def goto_text(self) -> None:
-        print("action go to next ########")
+    def __init__(self, id: str) -> None:
+        super().__init__(renderable=SavedTexts.load(0), id=id)
+
+    def next(self) -> None:
         self.count += 1
-        self.renderable = load_text(self.count)
+        self.renderable = SavedTexts.load(self.count)
+        _ = self.post_message(self.Changed())
