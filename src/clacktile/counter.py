@@ -24,12 +24,11 @@ class TimeCountdown(Counter):
         self.timer = self.set_interval(1, self.countdown, pause=True)
         self.start = start
         self.time = start
-        self.reset()
 
     def watch_time(self, time: int):
         if time == 0:
             self.timer.pause()
-            self.post_message(self.StatusChanged(Status.ENDED))
+            _ = self.post_message(self.StatusChanged(Status.ENDED))
         elif time <= 5:
             self.styles.animate("opacity", value=0.2, final_value=1.0, duration=0.9)
             self.styles.animate("color", value="red", duration=4.0)
@@ -43,7 +42,7 @@ class TimeCountdown(Counter):
     def reset(self):
         self.timer.reset()
         self.timer.pause()
-        self.post_message(self.StatusChanged(Status.NOT_STARTED))
+        _ = self.post_message(self.StatusChanged(Status.NOT_STARTED))
         self.time = self.start
         self.renderable = self.construct_renderable(self.start)
         self.styles.reset()

@@ -57,6 +57,8 @@ class ClacktileApp(App[str]):
                 countdown.timer.resume()
             case Status.NOT_STARTED:
                 countdown.reset()
+            case _:
+                pass
 
     def on_counter_status_changed(self, status: TimeCountdown.StatusChanged):
         typing_area = self.query_one("#input", expect_type=TypingArea)
