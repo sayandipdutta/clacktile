@@ -4,6 +4,7 @@ from typing import override
 
 from textual.app import App, ComposeResult
 from textual.containers import Center, Container
+from textual.widgets import Static
 
 from clacktile.common import Status
 from clacktile.counter import TimeCountdown
@@ -27,8 +28,10 @@ class ClacktileApp(App[str]):
         with Container(id="body"):
             with Center():
                 yield StaticText(id="text")
-            with Container(id="counter"):
-                yield TimeCountdown(id="timer", start=10)
+            with Center():
+                with Container(classes="counter"):
+                    yield Static(id="speed")
+                    yield TimeCountdown(id="timer", start=10)
             with Center():
                 yield TypingArea(id="input")
 
@@ -38,6 +41,7 @@ class ClacktileApp(App[str]):
     def action_reset(self) -> None:
         _ = self.query_one("#input", expect_type=TypingArea).reset()
         _ = self.query_one("#timer", expect_type=TimeCountdown).reset()
+        self.query_one("#speed", expect_type=Static).update()
 
     @override
     def action_screenshot(
@@ -57,8 +61,13 @@ class ClacktileApp(App[str]):
                 countdown.timer.resume()
             case Status.NOT_STARTED:
                 countdown.reset()
-            case _:
-                pass
+                static = self.query_one("#speed", expect_type=Static)
+                static.update()
+            case Status.ENDED:
+                text = self.query_one("#input", expect_type=TypingArea).text
+                speed = len(text.split()) / (countdown.start / 60)
+                static = self.query_one("#speed", expect_type=Static)
+                static.update(f"[aqua]{speed:.02f} WPM")
 
     def on_counter_status_changed(self, status: TimeCountdown.StatusChanged):
         typing_area = self.query_one("#input", expect_type=TypingArea)
