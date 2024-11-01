@@ -1,6 +1,5 @@
 Screen {
     align: center middle;
-    layers: below above;
 }
 
 #body {
@@ -32,14 +31,23 @@ TypingArea {
     margin-top: 0;
 }
 
-#counter {
-  width: 80%;
-  content-align: right middle;
-  text-align: right;
-  padding: 1;
+.counter {
+  layout: grid;
+  grid-size: 2;
+  width: 60%;
+  height: auto;
+  content-align: center middle;
+  text-align: left;
+  padding: 1 2 1 2;
+  margin-top: 1;
+  grid-columns: 1fr 1fr;
 }
 
 #timer {
-  dock: bottom;
   content-align: right middle;
+}
+
+
+#speed {
+  content-align: left middle;
 }

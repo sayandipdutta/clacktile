@@ -34,5 +34,6 @@ class TypingArea(TextArea):
             case Status.ENDED:
                 # TODO: Consider cursor visibility
                 self.read_only = True
+                _ = self.post_message(self.StatusChanged(Status.ENDED))
             case Status.NOT_STARTED:
                 _ = self.clear()
