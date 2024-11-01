@@ -61,13 +61,13 @@ class ClacktileApp(App[str]):
                 countdown.timer.resume()
             case Status.NOT_STARTED:
                 countdown.reset()
-                static = self.query_one("#speed", expect_type=Static)
-                static.update()
+                self.query_one("#speed", expect_type=Static).update()
             case Status.ENDED:
-                text = self.query_one("#input", expect_type=TypingArea).text
-                speed = len(text.split()) / (countdown.start / 60)
-                static = self.query_one("#speed", expect_type=Static)
-                static.update(f"[aqua]{speed:.02f} WPM")
+                words = self.query_one("#input", expect_type=TypingArea).text.split()
+                speed = len(words) / (countdown.start / 60)
+                self.query_one("#speed", expect_type=Static).update(
+                    f"[aqua]{speed:.02f} WPM"
+                )
 
     def on_counter_status_changed(self, status: TimeCountdown.StatusChanged):
         typing_area = self.query_one("#input", expect_type=TypingArea)
