@@ -11,7 +11,7 @@ from clacktile.counter import TimeCountdown
 from clacktile.input import TypingArea
 from clacktile.static import StaticText
 from clacktile.ui_wrapper import wrap_body
-from clacktile.validator import calculate_accuracy
+from clacktile.validator import calculate_accuracy, live_feedback
 
 
 class ClacktileApp(App[str]):
@@ -65,6 +65,9 @@ class ClacktileApp(App[str]):
         match message.status:
             case Status.STARTED:
                 countdown.timer.resume()
+                static = self.query_one("#text", expect_type=StaticText).renderable
+                updated = live_feedback(str(static), message.text)
+                self.query_one("#text", expect_type=StaticText).update(updated)
             case Status.NOT_STARTED:
                 countdown.reset()
                 self.query_one("#speed", expect_type=Static).update()
