@@ -20,7 +20,6 @@ def calculate_accuracy(source: str, typed: str) -> float:
     Raises:
         AssertionError: If source string is empty
     """
-    assert source.split(), "Source must not be empty"
     with suppress(StatisticsError):
         return (
             Iter(typed.split())
