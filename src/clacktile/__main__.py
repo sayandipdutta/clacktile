@@ -11,6 +11,7 @@ from clacktile.counter import TimeCountdown
 from clacktile.input import TypingArea
 from clacktile.static import StaticText
 from clacktile.ui_wrapper import wrap_body
+from clacktile.validator import calculate_accuracy
 
 
 class ClacktileApp(App[str]):
@@ -31,6 +32,7 @@ class ClacktileApp(App[str]):
             with Center():
                 with Container(classes="counter"):
                     yield Static(id="speed")
+                    yield Static(id="accuracy")
                     yield TimeCountdown(id="timer", start=10)
             with Center():
                 yield TypingArea(id="input")
@@ -42,6 +44,7 @@ class ClacktileApp(App[str]):
         _ = self.query_one("#input", expect_type=TypingArea).reset()
         _ = self.query_one("#timer", expect_type=TimeCountdown).reset()
         self.query_one("#speed", expect_type=Static).update()
+        self.query_one("#accuracy", expect_type=Static).update()
 
     @override
     def action_screenshot(
@@ -62,12 +65,10 @@ class ClacktileApp(App[str]):
             case Status.NOT_STARTED:
                 countdown.reset()
                 self.query_one("#speed", expect_type=Static).update()
+                self.query_one("#accuracy", expect_type=Static).update()
             case Status.ENDED:
-                words = self.query_one("#input", expect_type=TypingArea).text.split()
-                speed = len(words) / (countdown.start / 60)
-                self.query_one("#speed", expect_type=Static).update(
-                    f"[aqua]{speed:.02f} WPM"
-                )
+                self.update_speed(countdown.start)
+                self.update_accuracy()
 
     def on_counter_status_changed(self, status: TimeCountdown.StatusChanged):
         typing_area = self.query_one("#input", expect_type=TypingArea)
@@ -77,6 +78,17 @@ class ClacktileApp(App[str]):
     def on_static_text_changed(self, message: StaticText.Changed):
         _ = self.action_reset()
         del message
+
+    def update_speed(self, time_elapsed_sec: float):
+        words = self.query_one("#input", expect_type=TypingArea).text.split()
+        speed = len(words) / (time_elapsed_sec / 60)
+        self.query_one("#speed", expect_type=Static).update(f"{speed:.02f} WPM")
+
+    def update_accuracy(self):
+        typed = self.query_one("#input", expect_type=TypingArea).text
+        static = str(self.query_one("#text", expect_type=StaticText).renderable)
+        acc = calculate_accuracy(static, typed)
+        self.query_one("#accuracy", expect_type=Static).update(f"{acc:.02%}")
 
 
 if __name__ == "__main__":
