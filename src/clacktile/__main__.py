@@ -37,6 +37,9 @@ class ClacktileApp(App[str]):
             with Center():
                 yield TypingArea(id="input")
 
+    def on_mount(self):
+        _ = self.query_one("#input").focus()
+
     def action_next_static_text(self) -> None:
         self.query_one("#text", expect_type=StaticText).next()
 
