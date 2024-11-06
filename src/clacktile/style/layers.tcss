@@ -18,7 +18,7 @@ StaticText {
 }
 
 #text {
-    width: 80%;
+    width: 60%;
     background: $boost;
     margin-top: 4;
     height: 10;
