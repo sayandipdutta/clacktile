@@ -11,7 +11,7 @@ from clacktile.counter import TimeCountdown
 from clacktile.input import TypingArea
 from clacktile.static import StaticText
 from clacktile.ui_wrapper import wrap_body
-from clacktile.validator import calculate_accuracy, live_feedback
+from clacktile.validator import calculate_accuracy, live_feedback, live_speed
 
 
 class ClacktileApp(App[str]):
@@ -78,6 +78,10 @@ class ClacktileApp(App[str]):
         static = self.query_one("#text", expect_type=StaticText).renderable
         updated = live_feedback(str(static), message.text)
         self.query_one("#text", expect_type=StaticText).update(updated)
+        countdown = self.query_one("#timer", expect_type=TimeCountdown)
+        elapsed = (countdown.start - countdown.time) or 1
+        speed = live_speed(message.text, elapsed)
+        self.query_one("#speed", expect_type=Static).update(f"{speed:.02f} WPM")
 
     def on_counter_status_changed(self, status: TimeCountdown.StatusChanged):
         typing_area = self.query_one("#input", expect_type=TypingArea)
