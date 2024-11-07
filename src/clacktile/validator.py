@@ -47,7 +47,7 @@ def live_feedback(source: str, typed: str) -> Text:
         elif s == t:
             return SUCCESS(s)
         elif s.startswith(t):
-            return s.replace(t, MATCHES(t), count=1)
+            return MATCHES(t) + s.removeprefix(t)
         else:
             return FAILURE(s)
 
