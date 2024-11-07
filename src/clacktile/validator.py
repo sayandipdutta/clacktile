@@ -41,7 +41,7 @@ def live_feedback(source: str, typed: str) -> Text:
     if not typed:
         return Text(source)
 
-    def map_color(s: str, t: str | None):
+    def map_color(s: str, t: str | None) -> str:
         if t is None:
             return s
         elif s == t:
@@ -57,6 +57,10 @@ def live_feedback(source: str, typed: str) -> Text:
         .starmap(map_color)
         .feed_into(" ".join)
     )  # fmt: skip
+
+
+def live_speed(typed: str, time: int) -> float:
+    return len(typed.split()) / (time / 60)
 
 
 if __name__ == "__main__":
