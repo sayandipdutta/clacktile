@@ -10,7 +10,6 @@ Screen {
 StaticText {
     width: 28;
     height: 8;
-    color: auto;
     content-align: center middle;
     padding: 2 2;
     margin-left: 10;
@@ -29,6 +28,10 @@ TypingArea {
     height: 60%;
     background: teal 0%;
     margin-top: 0;
+}
+
+TypingArea:hover,TypingArea:focus {
+    border: gray;
 }
 
 .counter {

@@ -35,8 +35,7 @@ class TimeCountdown(Counter):
 
     def countdown(self):
         self.time -= 1
-        minutes, seconds = divmod(self.time, 60)
-        updated_time = f"{minutes:02d}:{seconds:02d}"
+        updated_time = self.construct_renderable(self.time)
         self.update(updated_time)
 
     def reset(self):
@@ -49,4 +48,5 @@ class TimeCountdown(Counter):
 
     @staticmethod
     def construct_renderable(start: int) -> str:
-        return f"00:{start}"
+        minutes, seconds = divmod(start, 60)
+        return f"{minutes:02d}:{seconds:02d}"
