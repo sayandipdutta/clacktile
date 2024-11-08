@@ -52,3 +52,4 @@ class TypingArea(TextArea):
                 _ = self.post_message(self.StatusChanged(Status.ENDED, text=self.text))
             case Status.NOT_STARTED:
                 _ = self.clear()
+                self.read_only = False
