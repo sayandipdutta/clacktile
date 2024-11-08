@@ -76,7 +76,12 @@ class ClacktileApp(App[str]):
 
     def on_typing_area_editing(self, message: TypingArea.Editing):
         source = self.query_one("#text", expect_type=StaticText)
-        source.update(live_feedback(str(source.renderable), message.text))
+        source.update(
+            live_feedback(
+                source=str(source.renderable),
+                typed=message.text,
+            )
+        )
         self.query_one("#speed", expect_type=Static).update(
             live_speed(
                 typed=message.text,
@@ -94,11 +99,12 @@ class ClacktileApp(App[str]):
         del message
 
     def update_speed(self, time_elapsed_sec: int):
-        speed = live_speed(
-            typed=self.query_one("#input", expect_type=TypingArea).text,
-            time=time_elapsed_sec,
+        self.query_one("#speed", expect_type=Static).update(
+            live_speed(
+                typed=self.query_one("#input", expect_type=TypingArea).text,
+                time=time_elapsed_sec,
+            )
         )
-        self.query_one("#speed", expect_type=Static).update(speed)
 
     def update_accuracy(self):
         acc = calculate_accuracy(
