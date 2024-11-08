@@ -21,7 +21,6 @@ StaticText {
     height: auto;
     background: $boost;
     margin-top: 4;
-    /*height: 20;*/
 }
 
 TypingArea {
