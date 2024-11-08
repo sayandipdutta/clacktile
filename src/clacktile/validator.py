@@ -18,9 +18,6 @@ def calculate_accuracy(source: str, typed: str) -> float:
 
     Returns:
         float: Accuracy as a decimal between 0 and 1, or 0 if calculation fails
-
-    Raises:
-        AssertionError: If source string is empty
     """
     with suppress(StatisticsError):
         return (
@@ -59,8 +56,9 @@ def live_feedback(source: str, typed: str) -> Text:
     )  # fmt: skip
 
 
-def live_speed(typed: str, time: int) -> float:
-    return len(typed.split()) / (time / 60)
+def live_speed(typed: str, time: int) -> str:
+    speed = len(typed.split()) / (time / 60)
+    return f"{speed:.02f} WPM"
 
 
 if __name__ == "__main__":
