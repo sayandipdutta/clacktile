@@ -9,7 +9,7 @@ Screen {
 
 StaticText {
     width: 28;
-    height: 8;
+    height: auto;
     content-align: center middle;
     padding: 2 2;
     margin-left: 10;
@@ -18,16 +18,29 @@ StaticText {
 
 #text {
     width: 60%;
+    height: auto;
     background: $boost;
     margin-top: 4;
-    height: 10;
 }
 
 TypingArea {
-    width: 60%;
-    height: 60%;
-    background: teal 0%;
-    margin-top: 0;
+  width: 60%;
+  height: 30%;
+  background: teal 0%;
+  margin-top: 0;
+
+
+  &:dark {
+    &.-read-only .text-area--cursor {
+      background: $boost;
+    }
+  }
+
+  &:light {
+    &.-read-only .text-area--cursor {
+      background: $boost;
+    }
+  }
 }
 
 TypingArea:hover,TypingArea:focus {
