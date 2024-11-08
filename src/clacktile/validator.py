@@ -3,10 +3,11 @@ from itertools import zip_longest
 from statistics import StatisticsError
 
 from iterdot import Iter
+from rich.console import RenderableType
 from rich.text import Text
 
 
-def calculate_accuracy(source: str, typed: str) -> float:
+def calculate_accuracy(source: RenderableType, typed: RenderableType) -> float:
     """Calculate typing accuracy by comparing typed text against source text.
 
     Splits both strings into words and compares them word by word.
@@ -21,8 +22,8 @@ def calculate_accuracy(source: str, typed: str) -> float:
     """
     with suppress(StatisticsError):
         return (
-            Iter(typed.split())
-            .zip_with(source.split())
+            Iter(str(typed).split())
+            .zip_with(str(source).split())
             .starmap(lambda t, s: t == s)
             .stats.mean()
         )
