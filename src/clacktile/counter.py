@@ -46,6 +46,12 @@ class TimeCountdown(Counter):
         self.renderable = construct_renderable(self.start)
         self.styles.reset()
 
+    def elapsed_time(self, handle_zero: bool = True) -> int:
+        elapsed = self.start - self.time
+        if handle_zero and not elapsed:
+            elapsed += 1
+        return elapsed
+
 
 def construct_renderable(start: int) -> str:
     minutes, seconds = divmod(start, 60)

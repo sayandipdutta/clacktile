@@ -77,10 +77,11 @@ class ClacktileApp(App[str]):
     def on_typing_area_editing(self, message: TypingArea.Editing):
         source = self.query_one("#text", expect_type=StaticText)
         source.update(live_feedback(str(source.renderable), message.text))
-        countdown = self.query_one("#timer", expect_type=TimeCountdown)
-        elapsed = (countdown.start - countdown.time) or 1
         self.query_one("#speed", expect_type=Static).update(
-            live_speed(message.text, elapsed)
+            live_speed(
+                typed=message.text,
+                time=self.query_one("#timer", expect_type=TimeCountdown).elapsed_time(),
+            )
         )
 
     def on_counter_status_changed(self, status: TimeCountdown.StatusChanged):
@@ -93,14 +94,17 @@ class ClacktileApp(App[str]):
         del message
 
     def update_speed(self, time_elapsed_sec: int):
-        text = self.query_one("#input", expect_type=TypingArea).text
-        speed = live_speed(text, time_elapsed_sec)
+        speed = live_speed(
+            typed=self.query_one("#input", expect_type=TypingArea).text,
+            time=time_elapsed_sec,
+        )
         self.query_one("#speed", expect_type=Static).update(speed)
 
     def update_accuracy(self):
-        typed = self.query_one("#input", expect_type=TypingArea).text
-        static = str(self.query_one("#text", expect_type=StaticText).renderable)
-        acc = calculate_accuracy(static, typed)
+        acc = calculate_accuracy(
+            source=self.query_one("#text", expect_type=StaticText).renderable,
+            typed=self.query_one("#input", expect_type=TypingArea).text,
+        )
         self.query_one("#accuracy", expect_type=Static).update(f"{acc:.02%}")
 
 
