@@ -11,7 +11,12 @@ from clacktile.counter import TimeCountdown
 from clacktile.input import TypingArea
 from clacktile.static import StaticText
 from clacktile.ui_wrapper import wrap_body
-from clacktile.validator import calculate_accuracy, live_feedback, live_speed
+from clacktile.validator import (
+    calculate_accuracy,
+    format_accuracy,
+    live_feedback,
+    live_speed,
+)
 
 
 class ClacktileApp(App[str]):
@@ -32,8 +37,8 @@ class ClacktileApp(App[str]):
             with Center():
                 with Container(classes="counter"):
                     yield Static(id="speed")
-                    yield Static(id="accuracy")
                     yield TimeCountdown(id="timer", start=10)
+                    yield Static(id="accuracy")
             with Center():
                 yield TypingArea(id="input")
 
@@ -68,8 +73,8 @@ class ClacktileApp(App[str]):
                 countdown.timer.resume()
             case Status.NOT_STARTED:
                 countdown.reset()
-                self.query_one("#speed", expect_type=Static).update()
                 self.query_one("#accuracy", expect_type=Static).update()
+                self.query_one("#speed", expect_type=Static).update()
             case Status.ENDED:
                 self.update_speed(countdown.start)
                 self.update_accuracy()
@@ -111,7 +116,7 @@ class ClacktileApp(App[str]):
             source=self.query_one("#text", expect_type=StaticText).renderable,
             typed=self.query_one("#input", expect_type=TypingArea).text,
         )
-        self.query_one("#accuracy", expect_type=Static).update(f"{acc:.02%}")
+        self.query_one("#accuracy", expect_type=Static).update(format_accuracy(acc))
 
 
 if __name__ == "__main__":
