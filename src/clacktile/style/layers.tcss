@@ -54,21 +54,24 @@ TypingArea:hover,TypingArea:focus {
   height: auto;
   content-align: center middle;
   text-align: left;
-  padding: 1 2 1 2;
   margin-top: 1;
-  grid-columns: 1fr 3fr 1fr;
+  grid-columns: 3fr 3fr 3fr;
 }
 
 #timer {
-  content-align: right middle;
+  content-align: center middle;
+  text-align: center;
 }
 
 
 #speed {
-  content-align: left middle;
+  content-align: right middle;
+  text-align: left;
   color: aqua;
 }
 
 #accuracy {
   color: violet;
+  content-align: left middle;
+  text-align: right;
 }

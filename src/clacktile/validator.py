@@ -1,5 +1,4 @@
 from contextlib import suppress
-from itertools import zip_longest
 from statistics import StatisticsError
 
 from iterdot import Iter
@@ -31,6 +30,14 @@ def calculate_accuracy(source: RenderableType, typed: RenderableType) -> float:
     return 0
 
 
+def calculate_speed(typed: str, time: int) -> float:
+    return len(typed.split()) / (time / 60)
+
+
+def format_accuracy(acc: float) -> str:
+    return f"ACCURACY: {acc:.02%}"
+
+
 FAILURE = "[red]{}[/red]".format
 MATCHES = "[yellow]{}[/yellow]".format
 SUCCESS = "[green]{}[/green]".format
@@ -56,12 +63,12 @@ def live_feedback(source: str, typed: str) -> Text:
         .zip(typed.split(), missing_policy=Pad(None))
         .starmap(map_color)
         .feed_into(" ".join)
-    )  # fmt: skip
+    )
 
 
 def live_speed(typed: str, time: int) -> str:
-    speed = len(typed.split()) / (time / 60)
-    return f"{speed:.02f} WPM"
+    speed = calculate_speed(typed, time)
+    return f"SPEED: {speed:.02f} WPM"
 
 
 if __name__ == "__main__":
