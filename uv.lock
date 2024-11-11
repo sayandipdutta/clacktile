@@ -183,11 +183,11 @@ wheels = [
 
 [[package]]
 name = "iterdot"
-version = "0.2.3"
+version = "0.2.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/14/44/ffddb56b40353f5e76a526d99cdc49426bc3bea0c7e53820c67f0417ed17/iterdot-0.2.3.tar.gz", hash = "sha256:38c5335cf0039a142e97b882ab594a253dd42490ceadc0bb0e41ca71820d6a4b", size = 27629 }
+sdist = { url = "https://files.pythonhosted.org/packages/50/28/bf5533c8bb70e3d042675bb50251db8a74b4db0af084962bcec9edeff908/iterdot-0.2.4.tar.gz", hash = "sha256:fdb7fd5033e121470dca8889c04936d6389b967105c3a2a165679ba6282cb791", size = 31337 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/7d/4acf9b4de532043adecb5811550e9cfa512acb8533baada14378000614d4/iterdot-0.2.3-py3-none-any.whl", hash = "sha256:74178e3470a9591aaae2b7c5d2e5b30accf523f77d70cbc1e6c967be63fb57ea", size = 18858 },
+    { url = "https://files.pythonhosted.org/packages/62/ed/c11a54b2f7072a10782a21206ebcc25740052639e3475c87658c1877ed15/iterdot-0.2.4-py3-none-any.whl", hash = "sha256:8b8cf35c8e21cb295bb6beed21242608fd2054dda7137107614a8a3ea72d81bc", size = 21942 },
 ]
 
 [[package]]
