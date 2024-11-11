@@ -3,10 +3,12 @@ from itertools import zip_longest
 from statistics import StatisticsError
 
 from iterdot import Iter
+from iterdot.defaults import Pad
+from rich.console import RenderableType
 from rich.text import Text
 
 
-def calculate_accuracy(source: str, typed: str) -> float:
+def calculate_accuracy(source: RenderableType, typed: RenderableType) -> float:
     """Calculate typing accuracy by comparing typed text against source text.
 
     Splits both strings into words and compares them word by word.
@@ -18,14 +20,11 @@ def calculate_accuracy(source: str, typed: str) -> float:
 
     Returns:
         float: Accuracy as a decimal between 0 and 1, or 0 if calculation fails
-
-    Raises:
-        AssertionError: If source string is empty
     """
     with suppress(StatisticsError):
         return (
-            Iter(typed.split())
-            .zip_with(source.split())
+            Iter(str(typed).split())
+            .zip(str(source).split())
             .starmap(lambda t, s: t == s)
             .stats.mean()
         )
@@ -41,7 +40,8 @@ def live_feedback(source: str, typed: str) -> Text:
     if not typed:
         return Text(source)
 
-    def map_color(s: str, t: str | None) -> str:
+    def map_color(s: str | None, t: str | None) -> str:
+        assert s is not None
         if t is None:
             return s
         elif s == t:
@@ -51,16 +51,17 @@ def live_feedback(source: str, typed: str) -> Text:
         else:
             return FAILURE(s)
 
-    zipped = zip_longest(source.split(), typed.split())
     return Text.from_markup(
-        Iter(zipped)
+        Iter(source.split())
+        .zip(typed.split(), missing_policy=Pad(None))
         .starmap(map_color)
         .feed_into(" ".join)
     )  # fmt: skip
 
 
-def live_speed(typed: str, time: int) -> float:
-    return len(typed.split()) / (time / 60)
+def live_speed(typed: str, time: int) -> str:
+    speed = len(typed.split()) / (time / 60)
+    return f"{speed:.02f} WPM"
 
 
 if __name__ == "__main__":
@@ -69,5 +70,6 @@ if __name__ == "__main__":
     source = "I must not fear"
     typed = "I musr not few"
 
-    for i, char in enumerate(typed, start=1):
-        print(live_feedback(source, typed[:i]))
+    Iter(typed).enumerate().map(
+        lambda char: live_feedback(source, typed[: char.idx])
+    ).foreach(print)

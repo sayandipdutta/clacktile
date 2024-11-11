@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from textual.events import Key
 from textual.message import Message
 from textual.reactive import reactive
@@ -28,28 +29,18 @@ class TypingArea(TextArea):
         self.typing_status = Status.NOT_STARTED
 
     def on_key(self, key: Key):
-        char = "" if (ch := key.character) is None else ch
-        match self.typing_status:
-            case Status.NOT_STARTED if key.is_printable:
-                self.typing_status = Status.STARTED
-                _ = self.post_message(self.Editing(text=self.text + char))
-            case Status.STARTED:
-                if key.is_printable:
-                    _ = self.post_message(self.Editing(text=self.text + char))
-                if key.key in ("backspace", "delete"):
-                    _ = self.post_message(self.Editing(text=self.text))
-            case _:
-                pass
+        char = cast(str, key.character if key.is_printable else "")
+        editing_key = char or key.key in ("backspace", "delete")
+        if self.typing_status is Status.NOT_STARTED and char:
+            self.typing_status = Status.STARTED
+
+        if self.typing_status is not Status.ENDED and editing_key:
+            _ = self.post_message(self.Editing(text=self.text + char))
 
     def watch_typing_status(self, status: Status):
+        self.read_only = status is Status.ENDED
         match status:
-            case Status.STARTED:
-                _ = self.post_message(TypingArea.StatusChanged(status, text=self.text))
-                self.read_only = False
-            case Status.ENDED:
-                # TODO: Consider cursor visibility
-                self.read_only = True
-                _ = self.post_message(self.StatusChanged(Status.ENDED, text=self.text))
+            case Status.STARTED | Status.ENDED:
+                _ = self.post_message(self.StatusChanged(status, text=self.text))
             case Status.NOT_STARTED:
                 _ = self.clear()
-                self.read_only = False

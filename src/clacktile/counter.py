@@ -19,7 +19,7 @@ class TimeCountdown(Counter):
     time = reactive(0, init=False)
 
     def __init__(self, *, start: int, id: str | None = None) -> None:
-        renderable = self.construct_renderable(start)
+        renderable = construct_renderable(start)
         super().__init__(renderable, id=id)
         self.timer = self.set_interval(1, self.countdown, pause=True)
         self.start = start
@@ -35,7 +35,7 @@ class TimeCountdown(Counter):
 
     def countdown(self):
         self.time -= 1
-        updated_time = self.construct_renderable(self.time)
+        updated_time = construct_renderable(self.time)
         self.update(updated_time)
 
     def reset(self):
@@ -43,10 +43,16 @@ class TimeCountdown(Counter):
         self.timer.pause()
         _ = self.post_message(self.StatusChanged(Status.NOT_STARTED))
         self.time = self.start
-        self.renderable = self.construct_renderable(self.start)
+        self.renderable = construct_renderable(self.start)
         self.styles.reset()
 
-    @staticmethod
-    def construct_renderable(start: int) -> str:
-        minutes, seconds = divmod(start, 60)
-        return f"{minutes:02d}:{seconds:02d}"
+    def elapsed_time(self, handle_zero: bool = True) -> int:
+        elapsed = self.start - self.time
+        if handle_zero and not elapsed:
+            elapsed += 1
+        return elapsed
+
+
+def construct_renderable(start: int) -> str:
+    minutes, seconds = divmod(start, 60)
+    return f"{minutes:02d}:{seconds:02d}"
